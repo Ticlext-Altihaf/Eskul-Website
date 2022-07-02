@@ -8,7 +8,7 @@ class ClubModel extends Model
 {
     protected $table = 'clubs';
     protected $primaryKey = 'name';
-    protected $allowedFields = [
+    public $allowedFields = [
         'name',//lowercase for id
         'display_name',//nama organisasi
         'coach_name',//nama pembina
@@ -102,6 +102,10 @@ class ClubModel extends Model
     }
 
     public static function display_name_to_id($display_name){
+        //check if string
+        if($display_name == '' || !is_string($display_name)){
+            return null;
+        }
         return str_replace(' ', '-' , strtolower($display_name));
     }
 
@@ -131,7 +135,7 @@ class ClubModel extends Model
             'mission' => $faker->paragraph(5),
             'work_program' => $faker->userName,
             'icon' => $image_path,
-            'instagram' => $name,
+            'instagram' => $name_id,
             'created_at' => date('Y-m-d H:i:s'),
             'updated_at' => date('Y-m-d H:i:s'),
 

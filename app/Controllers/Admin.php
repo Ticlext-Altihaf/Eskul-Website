@@ -2,12 +2,12 @@
 
 namespace App\Controllers;
 
-use App\Controllers\BaseController;
 use Aspera\Spreadsheet\XLSX\Reader;
-use Config\Pager;
+use Exception;
 
 class Admin extends BaseController
 {
+
     public function index()
     {
         $data = [
@@ -17,21 +17,29 @@ class Admin extends BaseController
         ];
         $reader = new Reader();
 
-            $reader->open('dataeskul.xlsx');
-            $firstLine = null;
-            foreach ($reader as $row) {
-                if ($firstLine == null) {
-                    $firstLine = $row;
-                    $data['firstLine'] = $firstLine;
-                } else {
-                    $data['eskul'][] = $row;
-                }
+        $reader->open('dataeskul.xlsx');
+        $firstLine = null;
+        foreach ($reader as $row) {
+            if ($firstLine == null) {
+                $firstLine = $row;
+                $data['firstLine'] = $firstLine;
+            } else {
+                $data['eskul'][] = $row;
             }
+        }
 
         return view('admin/index', $data);
     }
 
-    public function auth(){
+    public function auth()
+    {
+        //get session role
+        $role = session()->get('role');
+        //check if role is admin
+        if (\App\Models\Admin::get_role_cardinality($role) != 1) {
+            //redirect to index page
+            return redirect()->to(base_url('/'));
+        }
         $data = [
             'ip' => $this->request->getIPAddress(),
             'name' => session()->get('name'),
@@ -40,16 +48,16 @@ class Admin extends BaseController
         ];
         $adminModel = model('App\Models\Admin');
         //check if post
-        if($this->request->getPost()){
+        if ($this->request->getPost()) {
             $type = $this->request->getPost('type');
-            if($type == "delete"){
+            if ($type == "delete") {
                 $username = $this->request->getPost('username');
                 try {
                     $adminModel->where('username', $username)->delete();
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     $data['error'] = $e->getMessage();
                 }
-            }elseif ($type == "add") {
+            } elseif ($type == "add") {
                 $username = $this->request->getPost('username');
                 $password = $this->request->getPost('password');
                 $role = $this->request->getPost('role');
@@ -62,11 +70,11 @@ class Admin extends BaseController
                 );
                 try {
                     $adminModel->insert($admin);
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     $data['error'] = $e->getMessage();
 
                 }
-            }elseif ($type == "update") {
+            } elseif ($type == "update") {
                 $username = $this->request->getPost('username');
                 $password = $this->request->getPost('password');
                 $role = $this->request->getPost('role');
@@ -74,35 +82,87 @@ class Admin extends BaseController
                 $admin = array(
                     'username' => $username
                 );
-                if($password != ""){
+                if ($password != "") {
                     $admin['password'] = password_hash($password, PASSWORD_DEFAULT);
                 }
-                if($role != ""){
+                if ($role != "") {
                     $admin['role'] = $role;
                 }
-                if($admin_club != ""){
+                if ($admin_club != "") {
                     $admin['admin_club'] = $admin_club;
                 }
                 try {
                     $adminModel->where('username', $username)->update($admin);
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     $data['error'] = $e->getMessage();
                 }
             }
-        }else {
-                //get query array
-                $query = $this->request->getGet();
+        } else {
+            //get query array
+            $query = $this->request->getGet();
+            $type = "get";
+            if (isset($query['type'])) {
                 $type = $query['type'];
-                if ($type) {
-                    $data['type'] = $type;
-                }
-
-                if ($type == "get") {
-                    $data['admins'] = $adminModel->findAll();
-                }
+            }
+            if ($type) {
+                $data['type'] = $type;
             }
 
-       
+            if ($type == "get") {
+                $data['admins'] = $adminModel->findAll();
+            }
+        }
+
+
         return view('admin/auth', $data);
+    }
+
+    public function club()
+    {
+        $role = session()->get('role');
+        //if lower than editor, redirect to index page
+        if (\App\Models\Admin::get_role_cardinality($role) > 2) {
+            //redirect to index page
+            return redirect()->to(base_url('/'));
+        }
+        $data = [
+            'title' => 'Admin',
+            'role' => $role,
+            'name' => session()->get('name'),
+        ];
+        $clubModel = model('App\Models\ClubModel');
+        $data['clubs'] = $clubModel->findAll();
+        $data["keys_field"] = $clubModel->allowedFields;
+        return view('admin/editor', $data);
+    }
+
+    public function clubDelete($club_name)
+    {
+        $role = session()->get('role');
+        //if lower than editor, redirect to index page
+        if (\App\Models\Admin::get_role_cardinality($role) > 2) {
+            //redirect to index page
+            return redirect()->to(base_url('/'));
+        }
+        $clubModel = model('App\Models\ClubModel');
+        try {
+            $clubModel->where('club_name', $club_name)->delete();
+        } catch (Exception $e) {
+            return view('/admin/error', array(
+                'error' => $e->getMessage()
+            ));
+        }
+        #redirect to previous page
+        return redirect()->to(base_url('/admin/manage/club'));
+    }
+
+    public function clubAdd()
+    {
+        $role = session()->get('role');
+        //if lower than editor, redirect to index page
+        if (\App\Models\Admin::get_role_cardinality($role) > 2) {
+            //redirect to index page
+            return redirect()->to(base_url('/'));
+        }
     }
 }

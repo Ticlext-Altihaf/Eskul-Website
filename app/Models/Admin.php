@@ -39,6 +39,19 @@ class Admin extends Model
         'password' => 'required|trim|alpha_numeric',
         'role' => 'required|in_list[admin, editor, editor_club, guest]',
     ];
+    public static function get_role_cardinality($role)
+    {
+        $ar = array(
+            'admin' => 1,
+            'editor' => 2,
+            'editor_club' => 3,
+            'guest' => 4,
+        );
+        if(isset($ar[$role])){
+            return $ar[$role];
+        }
+        return 5;
+    }
     protected $validationMessages = [];
     protected $skipValidation = false;
     protected $cleanValidationRules = true;
