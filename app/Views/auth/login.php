@@ -152,7 +152,7 @@
 
     <label for="password">Password</label>
     <input type="password" placeholder="Password" id="password" name="password">
-    <input type="hidden" id="redirect_url" name="redirect_url" value="<?= $redirect_url ?>">
+
     <!-- Check for session errors -->
     <?php if($error): ?>
         <div class="error">
