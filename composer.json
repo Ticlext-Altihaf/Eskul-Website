@@ -7,7 +7,8 @@
     "require": {
         "php": "^7.4 || ^8.0",
         "codeigniter4/framework": "^4.0",
-        "aspera/xlsx-reader": "^0.10.2"
+        "aspera/xlsx-reader": "^0.10.2",
+        "ext-curl": "*"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9",

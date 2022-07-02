@@ -34,51 +34,30 @@
             </div>
         </div>
         <div class="row gy-4 row-cols-1 row-cols-md-2">
+            <?php
+            foreach ($clubs as $club){
+            ?>
             <div class="col">
                 <div class="d-flex flex-column flex-lg-row">
-                    <div class="w-100"><img class="rounded img-fluid d-block w-100 fit-cover" style="height: 200px;" src="https://cdn.bootstrapstudio.io/placeholders/1400x800.png"></div>
+                    <div class="w-100">
+                        <img class="rounded img-fluid d-block w-100 fit-cover" style="height: 200px;" src="<?php echo esc($club["icon"]) ?>)"></div>
                     <div class="py-4 py-lg-0 px-lg-4">
-                        <h4>Lorem libero donec</h4>
-                        <p>Nullam id dolor id nibh ultricies vehicula ut id elit. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus.</p>
+                        <h4><a href="<?php echo $club['name']; ?>"><?php echo $club['display_name']; ?></a></h4>
+                        <p><?php echo $club['vision']; ?></p>
                     </div>
                 </div>
             </div>
-            <div class="col">
-                <div class="d-flex flex-column flex-lg-row">
-                    <div class="w-100"><img class="rounded img-fluid d-block w-100 fit-cover" style="height: 200px;" src="https://cdn.bootstrapstudio.io/placeholders/1400x800.png"></div>
-                    <div class="py-4 py-lg-0 px-lg-4">
-                        <h4>Lorem libero donec</h4>
-                        <p>Nullam id dolor id nibh ultricies vehicula ut id elit. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col">
-                <div class="d-flex flex-column flex-lg-row">
-                    <div class="w-100"><img class="rounded img-fluid d-block w-100 fit-cover" style="height: 200px;" src="https://cdn.bootstrapstudio.io/placeholders/1400x800.png"></div>
-                    <div class="py-4 py-lg-0 px-lg-4">
-                        <h4>Lorem libero donec</h4>
-                        <p>Nullam id dolor id nibh ultricies vehicula ut id elit. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col">
-                <div class="d-flex flex-column flex-lg-row">
-                    <div class="w-100"><img class="rounded img-fluid d-block w-100 fit-cover" style="height: 200px;" src="https://cdn.bootstrapstudio.io/placeholders/1400x800.png"></div>
-                    <div class="py-4 py-lg-0 px-lg-4">
-                        <h4>Lorem libero donec</h4>
-                        <p>Nullam id dolor id nibh ultricies vehicula ut id elit. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus.</p>
-                    </div>
-                </div>
-            </div>
+            <?php
+            }
+            ?>
         </div>
     </div>
 </section>
 <footer class="text-center">
     <div class="container text-muted py-4 py-lg-5">
         <ul class="list-inline">
-            <li class="list-inline-item me-4"><a class="link-secondary" href="#">Web design</a></li>
-            <li class="list-inline-item me-4"><a class="link-secondary" href="#">Development</a></li>
-            <li class="list-inline-item"><a class="link-secondary" href="#">Hosting</a></li>
+
+            <li class="list-inline-item">Total Clubs: <?php echo count($clubs) ?> </li>
         </ul>
         <ul class="list-inline">
             <li class="list-inline-item me-4"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" fill="currentColor" viewBox="0 0 16 16" class="bi bi-facebook">

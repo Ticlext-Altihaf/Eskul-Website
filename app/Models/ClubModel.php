@@ -108,16 +108,17 @@ class ClubModel extends Model
     public function fake(Generator &$faker)
     {
 
+        $image_url = $faker->imageUrl(1920, 1080);
         $ext = pathinfo($image_url, PATHINFO_EXTENSION);
         $name = $faker->unique()->sentence(4);
         $name_id = self::display_name_to_id($name);
 
         //download to images/icon/
-        $image_url = $faker->image();
+
         $image_name = $name_id.'.'.$ext;
+
         $image_path = 'images/icon/'.$image_name;
-        $image_data = file_get_contents($image_url);
-        file_put_contents($image_path, $image_data);
+        $image_path = $image_url;
 
         return [
             'name' => $name_id,
@@ -126,11 +127,11 @@ class ClubModel extends Model
             'chairman_name' => $faker->name,
             'vice_chairman_name' => $faker->name,
             'timetable' => $faker->randomElement(['senin', 'selasa', 'rabu', 'kamis']),
-            'vision' => $faker->sentence,
-            'mission' => $faker->sentence,
+            'vision' => $faker->paragraph(5),
+            'mission' => $faker->paragraph(5),
             'work_program' => $faker->userName,
-            'icon' => '/'. $image_path,
-            'instagram' => '@'.$name,
+            'icon' => $image_path,
+            'instagram' => $name,
             'created_at' => date('Y-m-d H:i:s'),
             'updated_at' => date('Y-m-d H:i:s'),
 

@@ -30,6 +30,7 @@ class Auth extends BaseController
             //check is default admin account exists
             if($credentials['username'] == 'root' && $admin == null){
                 //add default admin account
+                //todo change in production
                 $admin = array(
                     'username' => 'root',
                     'password' => password_hash('IAmRoot', PASSWORD_DEFAULT),

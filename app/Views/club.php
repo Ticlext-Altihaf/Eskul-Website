@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title><?= esc($title) ?></title>
+    <title><?= esc($display_name) ?></title>
     <meta name="twitter:description" content="SMK Negeri 1 Garut">
     <meta property="og:type" content="article">
     <meta name="description" content="SMK Negeri 1 Garut">
@@ -23,7 +23,7 @@
 
 <body id="page-top" data-bs-spy="scroll" data-bs-target="#mainNav" data-bs-offset="57">
 <nav class="navbar navbar-light navbar-expand-lg fixed-top" id="mainNav">
-    <div class="container"><a class="navbar-brand" href="#page-top">Title</a><button data-bs-toggle="collapse" data-bs-target="#navbarResponsive" class="navbar-toggler navbar-toggler-right" type="button" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"><i class="fa fa-align-justify"></i></button>
+    <div class="container"><a class="navbar-brand" href="#page-top"><?= esc($display_name) ?></a><button data-bs-toggle="collapse" data-bs-target="#navbarResponsive" class="navbar-toggler navbar-toggler-right" type="button" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"><i class="fa fa-align-justify"></i></button>
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
@@ -38,7 +38,7 @@
     <div class="container my-auto">
         <div class="row">
             <div class="col-lg-10 mx-auto">
-                <h1 class="text-uppercase"><strong>Title</strong></h1>
+                <h1 class="text-uppercase"><strong><?= esc($display_name) ?></strong></h1>
                 <hr>
             </div>
         </div>
@@ -53,12 +53,12 @@
             <div class="col offset-lg-8 text-center mx-auto">
                 <h2 class="text-white section-heading">Visi</h2>
                 <hr class="light my-4">
-                <p class="text-faded mb-4">aaaaaaa</p>
+                <p class="text-faded mb-4"><?= esc($vision) ?></p>
             </div>
             <div class="col offset-lg-8 text-center mx-auto">
                 <h2 class="text-white section-heading">Misi</h2>
                 <hr class="light my-4">
-                <p class="text-faded mb-4">aaaaaaa</p>
+                <p class="text-faded mb-4"><?= esc($mission) ?></p>
             </div>
         </div>
     </div>
@@ -78,7 +78,7 @@
                 <div class="card border-0 shadow-none">
                     <div class="card-body d-flex align-items-center p-0"><img class="rounded-circle flex-shrink-0 me-3 fit-cover" width="130" height="130" src="https://cdn.bootstrapstudio.io/placeholders/1400x800.png">
                         <div>
-                            <h5 class="fw-bold text-primary mb-0">John Smith</h5>
+                            <h5 class="fw-bold text-primary mb-0"><?= esc($coach_name) ?></h5>
                             <p class="text-muted mb-1">Pembina</p>
                             <ul class="list-inline fs-6 text-muted w-100 mb-0">
                                 <li class="list-inline-item text-center">
@@ -100,7 +100,7 @@
                 <div class="card border-0 shadow-none">
                     <div class="card-body d-flex align-items-center p-0"><img class="rounded-circle flex-shrink-0 me-3 fit-cover" width="130" height="130" src="https://cdn.bootstrapstudio.io/placeholders/1400x800.png">
                         <div>
-                            <h5 class="fw-bold text-primary mb-0"><strong>John Smith</strong></h5>
+                            <h5 class="fw-bold text-primary mb-0"><strong><?= esc($chairman_name) ?></strong></h5>
                             <p class="text-muted mb-1">Ketua</p>
                             <ul class="list-inline fs-6 text-muted w-100 mb-0">
                                 <li class="list-inline-item text-center">
@@ -122,7 +122,7 @@
                 <div class="card border-0 shadow-none">
                     <div class="card-body d-flex align-items-center p-0"><img class="rounded-circle flex-shrink-0 me-3 fit-cover" width="130" height="130" src="https://cdn.bootstrapstudio.io/placeholders/1400x800.png">
                         <div>
-                            <h5 class="fw-bold text-primary mb-0"><strong>John Smith</strong></h5>
+                            <h5 class="fw-bold text-primary mb-0"><strong><?= esc($vice_chairman_name) ?></strong></h5>
                             <p class="text-muted mb-1">Wakil Ketua</p>
                             <ul class="list-inline fs-6 text-muted w-100 mb-0">
                                 <li class="list-inline-item text-center">
@@ -155,7 +155,7 @@
         </div>
         <div class="row">
             <div class="col-lg-4 text-center ms-auto"><i class="fa fa-instagram fa-3x mb-3 sr-contact" data-aos="zoom-in" data-aos-duration="300" data-aos-once="true"></i>
-                <p><a href="https://www.instagram.com/">@aaaaa</a></p>
+                <p><a href="https://www.instagram.com/<?= esc($instagram) ?>">@<?= esc($instagram) ?></a></p>
             </div>
             <div class="col-lg-4 text-center me-auto"><i class="fa fa-envelope-o fa-3x mb-3 sr-contact" data-aos="zoom-in" data-aos-duration="300" data-aos-delay="300" data-aos-once="true"></i>
                 <p><a href="mailto:your-email@your-domain.com">email@example.com</a></p>
