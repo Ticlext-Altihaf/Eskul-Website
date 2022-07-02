@@ -2,10 +2,14 @@
 
 namespace App\Controllers;
 
+use App\Models\ClubModel;
+
 class Home extends BaseController
 {
     public function index()
     {
-        return view('welcome_message');
+        $clubModel = model('App\Models\ClubModel');
+        $data['clubs'] = $clubModel->findAll();
+        return view('welcome_message', $data);
     }
 }

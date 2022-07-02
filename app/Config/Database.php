@@ -30,12 +30,18 @@ class Database extends Config
      *
      * @var array
      */
+    /**
+CREATE USER 'itclub'@'127.0.0.1' IDENTIFIED BY 'itclub';
+CREATE DATABASE database_itclub;
+GRANT ALL PRIVILEGES ON database_itclub.* TO 'itclub'@'127.0.0.1' WITH GRANT OPTION;
+exit
+     */
     public $default = [
         'DSN'      => '',
-        'hostname' => 'localhost',
-        'username' => '',
-        'password' => '',
-        'database' => '',
+        'hostname' => '127.0.0.1',
+        'username' => 'itclub',
+        'password' => 'itclub',
+        'database' => 'database_itclub',
         'DBDriver' => 'MySQLi',
         'DBPrefix' => '',
         'pConnect' => false,

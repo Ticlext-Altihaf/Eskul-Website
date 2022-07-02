@@ -35,7 +35,17 @@ $routes->set404Override();
 
 // We get a performance increase by specifying the default
 // route since we don't have to scan directories.
+$routes->get('/admin', 'Admin::index', ['filter' => 'authGuard', 'as' => 'admin']);
+//$routes->get('/admin/manage', 'Admin::manage', ['filter' => 'authGuard', 'as' => 'admin.manage']);
+$routes->get('/admin/manage/auth', 'Admin::auth', ['filter' => 'authGuard', 'as' => 'admin.auth']);
+$routes->post('/admin/manage/auth', 'Admin::auth', ['filter' => 'authGuard', 'as' => 'admin.auth']);
+$routes->get('/login', 'Auth::login', ['as' => 'login']);
+$routes->post('/login', 'Auth::login');
+$routes->get('/logout', 'Auth::logout', ['filter' => 'authGuard', 'as' => 'logout']);
+$routes->get('/editor', 'Editor::index', ['filter' => 'authGuard', 'as' => 'editor']);
 $routes->get('/', 'Home::index');
+$routes->get('/(:any)', 'Club::index/$1', ['as' => 'club']);
+
 
 /*
  * --------------------------------------------------------------------
