@@ -3,26 +3,40 @@
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
+use CodeIgniter\Session\Session;
 use Config\Services;
 
 class Auth extends BaseController
 {
     public function login()
     {
-        // Check if user is already logged in
-        if (session()->get('isLoggedIn')) {
-            return redirect()->to(base_url('/'));
+        $redirect_url = session()->get('redirect_url');
+        if (!$redirect_url) {
+            $redirect_url = base_url('/');
+        }else{
+            session()->remove('redirect_url');
         }
         $data = array(
             'error' => null,
+            'redirect_url' => $redirect_url,
         );
+
         // Check if this form is submitted
         if ($this->request->getPost()) {
+            $throttler = Services::throttler();
+
+            // Restrict an IP address to no more than 1 request
+            // 5 second across the entire site.
+            if ($throttler->check(md5($this->request->getIPAddress()), 12, MINUTE) === false) {
+                return Services::response()->setStatusCode(429);
+            }
+
             //check if this browser
             // Get the user's credentials from the form
             $credentials = [
                 'username' => $this->request->getPost('username'),
-                'password' => $this->request->getPost('password')
+                'password' => $this->request->getPost('password'),
+                'redirect_url' => $this->request->getPost('redirect_url'),
             ];
             $adminModel = model('App\Models\Admin');
             //check if exist
@@ -42,8 +56,6 @@ class Auth extends BaseController
             if ($admin) {
                 // Check if the password is correct
                 if (password_verify($credentials['password'], $admin['password'])) {
-
-
                     // Set the session data
                     session()->set([
                         'isLoggedIn' => true,
@@ -51,12 +63,14 @@ class Auth extends BaseController
                         'role' => $admin['role'],
                         'admin_club' => $admin['admin_club']
                     ]);
-                    // Redirect to the dashboard
-                    return redirect()->to(base_url('/'));
+                    // Redirect to previous page
+                    return redirect()->to($credentials['redirect_url']);
+                }else{
+                    $data['error'] = 'Username atau Password salah';
                 }
             }
             // Set the error message
-           $data['error'] = 'Username atau Password salah';
+
         }
         return view('auth/login', $data);
     }

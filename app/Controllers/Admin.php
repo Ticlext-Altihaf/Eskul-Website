@@ -117,52 +117,5 @@ class Admin extends BaseController
         return view('admin/auth', $data);
     }
 
-    public function club()
-    {
-        $role = session()->get('role');
-        //if lower than editor, redirect to index page
-        if (\App\Models\Admin::get_role_cardinality($role) > 2) {
-            //redirect to index page
-            return redirect()->to(base_url('/'));
-        }
-        $data = [
-            'title' => 'Admin',
-            'role' => $role,
-            'name' => session()->get('name'),
-        ];
-        $clubModel = model('App\Models\ClubModel');
-        $data['clubs'] = $clubModel->findAll();
-        $data["keys_field"] = $clubModel->allowedFields;
-        return view('admin/editor', $data);
-    }
 
-    public function clubDelete($club_name)
-    {
-        $role = session()->get('role');
-        //if lower than editor, redirect to index page
-        if (\App\Models\Admin::get_role_cardinality($role) > 2) {
-            //redirect to index page
-            return redirect()->to(base_url('/'));
-        }
-        $clubModel = model('App\Models\ClubModel');
-        try {
-            $clubModel->where('club_name', $club_name)->delete();
-        } catch (Exception $e) {
-            return view('/admin/error', array(
-                'error' => $e->getMessage()
-            ));
-        }
-        #redirect to previous page
-        return redirect()->to(base_url('/admin/manage/club'));
-    }
-
-    public function clubAdd()
-    {
-        $role = session()->get('role');
-        //if lower than editor, redirect to index page
-        if (\App\Models\Admin::get_role_cardinality($role) > 2) {
-            //redirect to index page
-            return redirect()->to(base_url('/'));
-        }
-    }
 }

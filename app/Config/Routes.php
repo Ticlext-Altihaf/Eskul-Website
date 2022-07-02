@@ -35,19 +35,27 @@ $routes->set404Override();
 
 // We get a performance increase by specifying the default
 // route since we don't have to scan directories.
+
+//admin
 $routes->get('/admin', 'Admin::index', ['filter' => 'authGuard', 'as' => 'admin']);
 //$routes->get('/admin/manage', 'Admin::manage', ['filter' => 'authGuard', 'as' => 'admin.manage']);
 $routes->get('/admin/manage/auth', 'Admin::auth', ['filter' => 'authGuard', 'as' => 'admin.auth']);
 $routes->post('/admin/manage/auth', 'Admin::auth', ['filter' => 'authGuard', 'as' => 'admin.auth']);
-$routes->get('/admin/manage/club', "Admin::club", ['filter' => 'authGuard', 'as' => 'admin.club']);
-$routes->post('/admin/manage/club', "Admin::club", ['filter' => 'authGuard', 'as' => 'admin.club']);
-$routes->get('/admin/manage/club/add', "Admin::clubAdd", ['filter' => 'authGuard', 'as' => 'admin.club']);
-$routes->get('/admin/manage/club/delete/(:any)', "Admin::clubDelete/$1", ['filter' => 'authGuard', 'as' => 'admin.club']);
-$routes->get('/admin/manage/club/edit/(:any)', "Admin::clubEdit/$1", ['filter' => 'authGuard', 'as' => 'admin.club']);
+
+//Club Editor
+$routes->get('/admin/manage/club', "Editor::index", ['filter' => 'authGuard']);
+$routes->get('/admin/manage/club/add', "Editor::add", ['filter' => 'authGuard']);
+$routes->post("/admin/manage/club/add", "Editor::add", ['filter' => 'authGuard']);
+$routes->get('/admin/manage/club/delete/(:any)', "Editor::delete/$1", ['filter' => 'authGuard']);
+$routes->get('/admin/manage/club/edit/(:any)', "Editor::edit/$1", ['filter' => 'authGuard']);
+$routes->post("/admin/manage/club/edit/(:any)", "Editor::edit/$1", ['filter' => 'authGuard']);
+
+//Auth
 $routes->get('/login', 'Auth::login', ['as' => 'login']);
 $routes->post('/login', 'Auth::login');
 $routes->get('/logout', 'Auth::logout', ['filter' => 'authGuard', 'as' => 'logout']);
-$routes->get('/editor', 'Editor::index', ['filter' => 'authGuard', 'as' => 'editor']);
+
+//User
 $routes->get('/', 'Home::index');
 $routes->get('/(:any)', 'Club::index/$1', ['as' => 'club']);
 
