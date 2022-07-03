@@ -8,9 +8,13 @@ use Faker\Extension\Helper;
 
 class Editor extends BaseController
 {
+    function isEditorOrHigher(): bool{
+        $role = session()->get('role');
+        $cardinal = \App\Models\Admin::get_role_cardinality($role);
+        return  $cardinal <= 2;
+    }
     function isValidEditor($club): bool
     {
-
         $role = session()->get('role');
         //if editor or higher, return true
         $cardinal = \App\Models\Admin::get_role_cardinality($role);
@@ -46,11 +50,28 @@ class Editor extends BaseController
         }
         $clubModel = model('App\Models\ClubModel');
         try {
-            $clubModel->where('club_name', $club_name)->delete();
+            $clubModel->where('name', $club_name)->delete();
         } catch (Exception $e) {
+
         }
         #redirect to previous page
         return redirect()->to(previous_url());
+    }
+
+    public function deleteAll(){
+
+        if(!$this->isEditorOrHigher()){
+            //get previous url
+            return view('editor/error', ['error' => 'You are not authorized to delete this club']);//TODO translate
+        }
+        $clubModel = model('App\Models\ClubModel');
+        try {
+            $clubModel->builder()->truncate();
+        } catch (Exception $e) {
+            return view('editor/error', ['error' => $e->getMessage()]);//TODO translate
+        }
+        #redirect to previous page
+        return redirect()->back();
     }
 
     public function add()

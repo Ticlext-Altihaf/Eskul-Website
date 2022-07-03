@@ -35,20 +35,21 @@ class Admin extends Model
 
     // Validation
     protected $validationRules = [
-        'username' => 'required|is_unique[admins.username]|trim|strtolower|alpha_numeric',
-        'password' => 'required|trim|alpha_numeric',
-        'role' => 'required|in_list[admin, editor, editor_club, guest]',
+        'username' => 'required',
+        'password' => 'required',
+        'role' => 'required',
     ];
-    public static function get_role_cardinality($role)
+public static array $roles = array(
+'admin' => 1,
+'editor' => 2,
+'editor_club' => 3,
+'guest' => 4,
+);
+    public static function get_role_cardinality($role):int
     {
-        $ar = array(
-            'admin' => 1,
-            'editor' => 2,
-            'editor_club' => 3,
-            'guest' => 4,
-        );
-        if(isset($ar[$role])){
-            return $ar[$role];
+
+        if(isset(Admin::$roles[$role])){
+            return Admin::$roles[$role];
         }
         return 5;
     }

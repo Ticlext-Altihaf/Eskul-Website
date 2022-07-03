@@ -40,15 +40,17 @@ $routes->set404Override();
 $routes->get('/admin', 'Admin::index', ['filter' => 'authGuard', 'as' => 'admin']);
 //$routes->get('/admin/manage', 'Admin::manage', ['filter' => 'authGuard', 'as' => 'admin.manage']);
 $routes->get('/admin/manage/auth', 'Admin::auth', ['filter' => 'authGuard', 'as' => 'admin.auth']);
-$routes->post('/admin/manage/auth', 'Admin::auth', ['filter' => 'authGuard', 'as' => 'admin.auth']);
-
+$routes->post('/admin/manage/auth', 'Admin::api', ['filter' => 'authGuard', 'as' => 'admin.api']);
+$routes->get("/admin/manage/auth/delete/(:any)", 'Admin::delete/$1', ['filter' => 'authGuard', 'as' => 'admin.delete']);
+$routes->post("/admin/manage/auth/add", 'Admin::add', ['filter' => 'authGuard', 'as' => 'admin.add']);
 //Club Editor
 $routes->get('/admin/manage/club', "Editor::index", ['filter' => 'authGuard']);
-$routes->get('/admin/manage/club/add', "Editor::add", ['filter' => 'authGuard']);
-$routes->post("/admin/manage/club/add", "Editor::add", ['filter' => 'authGuard']);
-$routes->get('/admin/manage/club/delete/(:any)', "Editor::delete/$1", ['filter' => 'authGuard']);
-$routes->get('/admin/manage/club/edit/(:any)', "Editor::edit/$1", ['filter' => 'authGuard']);
-$routes->post("/admin/manage/club/edit/(:any)", "Editor::edit/$1", ['filter' => 'authGuard']);
+$routes->get('/admin/manage/club/add', "Editor::add", ['filter' => 'authGuard', 'as' => 'editor.add']);
+$routes->post("/admin/manage/club/add", "Editor::add", ['filter' => 'authGuard', 'as' => 'editor.add']);
+$routes->get("/admin/manage/club/delete-all", "Editor::deleteAll", ['filter' => 'authGuard', 'as' => 'editor.delete.all']);
+$routes->get('/admin/manage/club/delete/(:any)', "Editor::delete/$1", ['filter' => 'authGuard', 'as' => 'editor.delete']);
+$routes->get('/admin/manage/club/edit/(:any)', "Editor::edit/$1", ['filter' => 'authGuard', 'as' => 'editor.edit']);
+$routes->post("/admin/manage/club/edit/(:any)", "Editor::edit/$1", ['filter' => 'authGuard', 'as' => 'editor.edit']);
 
 //Auth
 $routes->get('/login', 'Auth::login', ['as' => 'login']);

@@ -14,8 +14,8 @@
           href="https://cpwebassets.codepen.io/assets/favicon/logo-pin-8f3771b1072e3c38bd662872f6b673a722f4b3ca2421637d5596661b4e2132cc.svg"
           color="#111">
 
-
-    <title>CodePen - Responsive Table + Detail View</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <title>Admin Auth Manage</title>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
 
@@ -274,27 +274,112 @@
             background-color: #f44336;
         }
     </style>
+    <link rel="stylesheet" href="/assets/css/login.css">
+    <script>
+        function post(data) {
+            //check if str
+            if (typeof (data) == 'string') {
+                data = {
+                    'action': data
+                }
+            }
+            let req = new XMLHttpRequest();
+            req.open('POST', '');
+            req.setRequestHeader('Content-Type', 'application/json');
+            req.send(JSON.stringify(data));
+            req.onload = function () {
+                const obj = JSON.parse(req.responseText);
+                if (req.status === 200) {
+                    alert(obj.message);
+                    location.reload();
+                } else {
+                    if(obj.errors){
+                        for (let [key, value] of Object.entries(obj.errors)) {
+                            alert(key + ': ' + value);
+                        }
+                    }
+                    alert('Error ' + req.status + ': ' + obj.message);
+                }
+            }
+        }
 
-
-
-
-
+    </script>
+    <style>
+        form {
+            height: 80%;
+            width: 30%;
+            background-color: rgba(255, 255, 255, 0.13);
+            position: absolute;
+            transform: translate(-50%, -55%);
+            left: 50%;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 40px rgb(8 7 16 / 60%);
+            padding: 50px 35px;
+        }
+        label {
+            display: block;
+            margin-top: 1px;
+            font-size: 16px;
+            font-weight: 500;
+        }
+    </style>
 </head>
 
 <body>
 <h1>
     Auth List <?= esc($type) ?>
 </h1>
+<!-- check for errors -->
+<?php if (isset($errors) && !empty($errors)): ?>
+    <div class="error">
+        <ul>
+            <?php foreach ($errors as $key => $value): ?>
+                <li><?= esc($key) ?>: <?= esc($value) ?></li>
+            <?php endforeach; ?>
+        </ul>
+    </div>
+<?php endif; ?>
+<form method="post" id="form-add" hidden="hidden" action="<?= route_to("admin.add")?>">
+    <label for="username">Username</label>
+    <input type="text" placeholder="Username" id="username" name="username">
 
+    <label for="password">Password</label>
+    <input type="text" placeholder="Password" id="password" name="password">
+
+    <label for="role">Role</label>
+    <select name="role" id="role">
+
+        <?php foreach ($roles as $role => $index): ?>
+            <option value="<?= $role ?>"><?= $role ?></option>
+        <?php endforeach; ?>
+    </select>
+
+    <label for="admin_club">Admin Club</label>
+    <select name="admin_club" id="admin_club">
+        <option value="" selected>None</option>
+        <?php foreach ($clubs as $club): ?>
+            <option value="<?= $club['name'] ?>"><?= $club['name'] ?></option>
+        <?php endforeach; ?>
+    </select>
+    <input type="text" id="action" name="action" hidden value="add"/>
+
+    <!-- Check for session errors -->
+    <?php if($error): ?>
+        <div class="error">
+            <?php echo $error; ?>
+        </div>
+    <?php endif; ?>
+    <button>Add</button>
+
+</form>
 <main>
     <table>
         <thead>
         <tr>
             <th>
                 Username
-            </th>
-            <th>
-                Password Hash
             </th>
             <th>
                 Role
@@ -309,15 +394,22 @@
         </thead>
         <tfoot>
         <tr>
-            <th colspan="4">
-                <a href="?type=add" class="button">
-                    Add
-                </a>
+            <th colspan="3">
+                <button class="button" onclick="
+                const a =document.getElementById('form-add');
+                a.hidden = !a.hidden;
+
+"> Add </button>
             </th>
             <th colspan="1">
-                <a href="?type=delete_all" class="button danger">
-                    Delete All
-                </a>
+                <button class="button danger" id="delete-all"
+                        onclick="
+                if(confirm('Are you sure you want to delete all?')){
+                    post({
+                        'action': 'delete-all'
+                    })
+                }">Delete All
+                </button>
             </th>
 
         </tr>
@@ -327,38 +419,20 @@
         foreach ($admins as $admin) {
             echo '<tr>';
             echo '<td data-title="username">' . $admin['username'] . '</td>';
-            echo '<td data-title="password-hashed">' . $admin['password'] . '</td>';
             echo '<td data-title="role">' . $admin['role'] . '</td>';
             echo '<td data-title="admin-club">' . $admin['admin_club'] . '</td>';
             echo '<td>';
-            echo '<a href="?type=edit&id=' . $admin['id'] . '" class="button">Edit</a>';
-            echo '<a href="?type=delete&id=' . $admin['id'] . '" class="button danger">Delete</a>';
+            //echo '<a href="edit/' . $admin['username'] . '" class="button">Edit</a>';//too lazy implement later
+
+            echo '<a href="'. route_to('admin.delete', $admin['username'])   . '" class="button danger">Delete</a>';
             echo '</td>';
             echo '</tr>';
         }
         ?>
-        <tr>
-            <td data-title="Provider Name">
-                Bram Lemmens
-            </td>
-            <td data-title="E-mail">
-                e-mail@test-email.com
-            </td>
-            <td data-title="E-mail">
-                e-mail@test-email.com
-            </td>
-            <td data-title="E-mail">
-                e-mail@test-email.com
-            </td>
-            <td>
-                <a href="?type=edit&id=1" class="button">Edit</a>
-                <a href="?type=delete&id=1" class="button danger">Delete</a>
-            </td>
-        </tr>
+
         </tbody>
     </table>
 </main>
-
 
 
 </body>
