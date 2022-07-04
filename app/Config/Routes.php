@@ -44,13 +44,15 @@ $routes->post('/admin/manage/auth', 'Admin::api', ['filter' => 'authGuard', 'as'
 $routes->get("/admin/manage/auth/delete/(:any)", 'Admin::delete/$1', ['filter' => 'authGuard', 'as' => 'admin.delete']);
 $routes->post("/admin/manage/auth/add", 'Admin::add', ['filter' => 'authGuard', 'as' => 'admin.add']);
 //Club Editor
-$routes->get('/admin/manage/club', "Editor::index", ['filter' => 'authGuard']);
+$routes->get('/admin/manage/club', "Editor::index", ['filter' => 'authGuard', 'as' => 'editor']);
 $routes->get('/admin/manage/club/add', "Editor::add", ['filter' => 'authGuard', 'as' => 'editor.add']);
 $routes->post("/admin/manage/club/add", "Editor::add", ['filter' => 'authGuard', 'as' => 'editor.add']);
 $routes->get("/admin/manage/club/delete-all", "Editor::deleteAll", ['filter' => 'authGuard', 'as' => 'editor.delete.all']);
 $routes->get('/admin/manage/club/delete/(:any)', "Editor::delete/$1", ['filter' => 'authGuard', 'as' => 'editor.delete']);
 $routes->get('/admin/manage/club/edit/(:any)', "Editor::edit/$1", ['filter' => 'authGuard', 'as' => 'editor.edit']);
 $routes->post("/admin/manage/club/edit/(:any)", "Editor::edit/$1", ['filter' => 'authGuard', 'as' => 'editor.edit']);
+$routes->get('/admin/manage/club/import', "Editor::import", ['filter' => 'authGuard', 'as' => 'editor.import']);
+$routes->post("/admin/manage/club/import", "Editor::import", ['filter' => 'authGuard', 'as' => 'editor.import']);
 
 //Auth
 $routes->get('/login', 'Auth::login', ['as' => 'login']);

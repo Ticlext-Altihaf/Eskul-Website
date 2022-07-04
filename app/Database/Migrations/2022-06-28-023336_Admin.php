@@ -28,7 +28,7 @@ class Admin extends Migration
             'admin_club' => [
                 'type' => 'VARCHAR',
                 'constraint' => '255',
-                'null' => false,
+                'null' => true,
             ],
             'created_at' => [
                 'type' => 'DATETIME',

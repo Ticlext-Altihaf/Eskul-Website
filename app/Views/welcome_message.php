@@ -42,7 +42,7 @@
                     <div class="w-100">
                         <img class="rounded img-fluid d-block w-100 fit-cover" style="height: 200px;" src="<?php echo esc($club["icon"]) ?>"></div>
                     <div class="py-4 py-lg-0 px-lg-4">
-                        <h4><a href="<?php echo $club['name']; ?>"><?php echo $club['display_name']; ?></a></h4>
+                        <h4><a href="<?= route_to("club", $club['name']) ?>"><?php echo $club['display_name']; ?></a></h4>
                         <p><?php echo $club['vision']; ?></p>
                     </div>
                 </div>
