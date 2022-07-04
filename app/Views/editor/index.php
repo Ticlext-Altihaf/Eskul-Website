@@ -9,7 +9,6 @@
             font-family: sans-serif;
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
             white-space:nowrap;
-
             table-layout: fixed;
         }
         .styled-table thead tr {
@@ -36,21 +35,34 @@
         .styled-table tbody tr:last-of-type {
             border-bottom: 2px solid #009879;
         }
+
         .styled-table tbody tr.active-row {
             font-weight: bold;
             color: #009879;
 
         }
 
+        a.button {
+            -webkit-appearance: button;
+            -moz-appearance: button;
+            appearance: button;
+
+            text-decoration: none;
+            color: initial;
+        }
     </style>
 
 </head>
 <body>
 
 <button>
-    <a href="<?= route_to("editor.add") ?>">Add</a>
-    <a href="<?= route_to("editor.import") ?>">Import</a>
-    <a href="<?= route_to("editor.delete.all") ?>">Delete All</a>
+    <a href="<?= route_to("editor.add") ?>">Tambah</a>
+</button>
+<button>
+    <a href="<?= route_to("editor.import") ?>">Import dari Excel</a>
+</button>
+<button>
+    <a href="<?= route_to("editor.delete.all") ?>">Hapus Semua</a>
 </button>
 <table class="styled-table">
     <?php
@@ -59,8 +71,8 @@
     }
     ?>
     <th>Edit</th>
-    <th>Delete</th>
-    <th>View</th>
+    <th>Hapus</th>
+    <th>Lihat</th>
     <?php
     foreach ($clubs as $no => $values) {
         echo "<tr>";
@@ -68,8 +80,8 @@
             echo "<td>$value</td>";
         }
         echo "<td><a href='" . route_to("editor.edit", $values['name']) . "'>Edit</a></td>";
-        echo "<td><a href='" . route_to("editor.delete", $values['name']) . "'>Delete</a></td>";
-        echo "<td><a target='_blank' href='" . base_url($values['name']) . "'>View</a></td>";
+        echo "<td><a href='" . route_to("editor.delete", $values['name']) . "'>Hapus</a></td>";
+        echo "<td><a target='_blank' href='" . base_url($values['name']) . "'>Lihat</a></td>";
         echo "</tr>";
     }
     ?>
