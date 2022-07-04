@@ -1,31 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Upload Form</title>
+    <title><?php echo $name == "" ? "Add" : "Editor" ?></title>
 </head>
 <body>
+<h1><?php echo $name == "" ? "Add" : "Editor" ?></h1>
 <?php
+
 if (isset($error)) {
     echo '<div class="alert alert-danger" role="alert">' . $error . '</div>';
 }
-if(!isset($errors)){
+if (!isset($errors)) {
     $errors = array();
 }
 ?>
-<?php foreach ($errors as $error): ?>
-    <li><?= esc($error) ?></li>
+<?php foreach ($errors as $key => $value): ?>
+    <li><?= esc($key) ?>: <?= esc($value) ?></li>
 <?php endforeach ?>
 
-<?= form_open_multipart(route_to('editor.edit', $name)) ?>
+<?= form_open_multipart($route) ?>
 <br>
 <label>
     Nama Organisasi
-    <input type="text" name="display_name" value="<?= $display_name ?>" />
+    <input type="text" name="display_name" value="<?= $display_name ?>"/>
 </label>
 <br>
 <label>
     Nama Pembina
-    <input type="text" name="coach_name" value="<?= $coach_name ?>" />
+    <input type="text" name="coach_name" value="<?= $coach_name ?>"/>
 </label>
 <br>
 <label>

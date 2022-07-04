@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\ClubModel;
+use Config\Services;
 use Exception;
 
 class Editor extends BaseController
@@ -89,84 +90,29 @@ class Editor extends BaseController
             return redirect()->to(base_url('/'));
         }
 
-        //post ?
-        if ($this->request->getPost()) {
-            $clubModel = model('App\Models\ClubModel');
-            $validationRule = [
-                'icon' => [
-                    'label' => 'Image Icon',
-                    'rules' => 'uploaded[icon]'
-                        . '|is_image[icon]'
-                        . '|mime_in[icon,image/jpg,image/jpeg,image/gif,image/png,image/webp]'
-                ],
-                'name' => [
-                    'label' => 'Name',
-                    'rules' => 'required'
-                ],
-            ];
-            $this->validator->setRules($validationRule);
-            if (!$this->validate($validationRule)) {
-                return redirect()->with('errors', $this->validator->getErrors())->back();
-            }
-            $club = array();
-            $club['display_name'] = $this->request->getVar('name') ?? '';
-            if ($club['display_name'] == '') {
-                return redirect()->with('error', 'Name is required')->back();
-            }
-            $club['name'] = ClubModel::display_name_to_id($club['name']);
-            if ($clubModel->find($club['name']) != null) {
-                return redirect()->with('error', 'Club already exists')->back();
-            }
-
-            /*
-             * 'name',//lowercase for id
-        'display_name',//nama organisasi
-        'coach_name',//nama pembina
-        'chairman_name',//nama pimpinan
-        'vice_chairman_name',//nama wakil pimpinan
-        'timetable',//jadwal kegiatan (jumat dan ...)
-        'vision',//visi
-        'mission',//misi
-        'work_program',//program kerja
-        'icon',//icon organisasi (data:image/png;base64) or src="data here"
-        'instagram',//instagram
-             */
-            $club['coach_name'] = $this->request->getVar('coach_name') ?? '';
-            $club['chairman_name'] = $this->request->getVar('chairman_name') ?? '';
-            $club['vice_chairman_name'] = $this->request->getVar('vice_chairman_name') ?? '';
-            $club['timetable'] = $this->request->getVar('timetable') ?? '';
-            $club['vision'] = $this->request->getVar('vision') ?? '';
-            $club['mission'] = $this->request->getVar('mission') ?? '';
-            $club['work_program'] = $this->request->getVar('work_program') ?? '';
-            $club['icon'] = '';
-            $club['instagram'] = $this->request->getVar('instagram') ?? '';
-
-            if ($club['timetable'] == '') {
-                return redirect()->with('error', 'Timetable is required')->back();
-            }
-            if (strpos($club['instagram'], '@') === 0) {
-                //remove it
-                $club['instagram'] = substr($club['instagram'], 1);
-            }
-            $img = $this->request->getFile('icon');
-            if ($img->isValid()) {
-                if ($img->getError() == 0) {
-                    if (!$img->hasMoved()) {
-                        $img->move('/images/icon/', null, true);
-                    }
-                    $club['icon'] = $img->getPathname();
-                } else {
-                    return redirect()->with('error', 'Icon is invalid: ' . $img->getErrorString())->back();
-                }
-            }
-            try {
-                $clubModel->insert($club);
-                return redirect()->to(base_url($club['name']));
-            } catch (Exception $e) {
-                return redirect()->with('error', 'Error: ' . $e->getMessage())->back();
-            }
+        $display_name = $this->request->getVar('display_name');
+        if ($display_name != null) {
+            return $this->edit0(null);
         }
-        return view('editor/add');
+        return view('editor/edit', array(
+            'name' => '',
+            'display_name' => '',
+            'coach_name' => '',
+            'chairman_name' => '',
+            'vice_chairman_name' => '',
+            'timetable' => '',
+            'vision' => '',
+            'mission' => '',
+            'work_program' => '',
+            'icon' => '',
+            'instagram' => '',
+            'created_at' => date('Y-m-d H:i:s'),
+            'updated_at' => date('Y-m-d H:i:s'),
+            'timetables' => ClubModel::$timetables,
+            'error' => Services::session()->getFlashdata('error') ?? '',
+            'errors' => Services::session()->getFlashdata('errors') ?? [],
+            'route' => route_to('editor.add')
+        ));
     }
 
     public function import()
@@ -204,41 +150,62 @@ class Editor extends BaseController
         }
         $display_name = $this->request->getVar('display_name');
         if ($display_name != null) {
-            if ($display_name == '') {
-                return redirect()->with('error', 'Name is required')->back();
-            }
-            $club['display_name'] = $display_name;
-            $club['name'] = ClubModel::display_name_to_id($display_name);
-            $club['coach_name'] = $this->request->getVar('coach_name') ?? $club['coach_name'];
-            $club['chairman_name'] = $this->request->getVar('chairman_name') ?? $club['chairman_name'];
-            $club['vice_chairman_name'] = $this->request->getVar('vice_chairman_name') ?? $club['vice_chairman_name'];
-            $club['timetable'] = $this->request->getVar('timetable') ?? $club['timetable'];
-            $club['vision'] = $this->request->getVar('vision') ?? $club['vision'];
-            $club['mission'] = $this->request->getVar('mission') ?? $club['mission'];
-            $club['work_program'] = $this->request->getVar('work_program') ?? $club['work_program'];
-            $club['instagram'] = $this->request->getVar('instagram') ?? $club['instagram'];
-            $icon_file = $this->request->getFile('icon');
-            if ($icon_file->isValid()) {
-                if ($icon_file->getError() == 0) {
-                    $dir = ROOTPATH.'/public/images/icon/';
-                    $file_name = $name.'.'.$icon_file->getExtension();
-                    if (!$icon_file->hasMoved()) {
-                        $icon_file->move($dir, $file_name, true);
-                    }
-                    $club['icon'] = '/images/icon/'.$file_name;
-                } else {
-                    return redirect()->with('error', 'Icon is invalid: ' . $icon_file->getErrorString())->back();
-                }
-            }
-            try {
-                $clubModel->update($name, $club);
-                return redirect()->to(route_to('editor'));
-            } catch (Exception $e) {
-                return redirect()->with('error', 'Error: ' . $e->getMessage())->back();
-            }
-
+            return $this->edit0($name);
         }
         $club['timetables'] = ClubModel::$timetables;
+        $club['route'] = route_to('editor.edit', $name);
+        $club['error'] = Services::session()->getFlashdata('error') ?? '';
+        $club['errors'] = Services::session()->getFlashdata('errors') ?? [];
         return view('editor/edit', $club);
+    }
+
+    private function edit0($name)
+    {
+        $clubModel = model('App\Models\ClubModel');
+        $display_name = $this->request->getVar('display_name');
+        if ($display_name == '') {
+            return redirect()->with('error', 'Display name is required')->back();//TODO translate
+        }
+        $club['display_name'] = $display_name;
+        $club['name'] = ClubModel::display_name_to_id($display_name);
+        if ($clubModel->find($club['name']) != null && $name == null) {
+            return redirect()->with('error', 'Club already exists')->back();//TODO translate
+        }
+
+        $club['coach_name'] = $this->request->getVar('coach_name') ?? $club['coach_name'];
+        $club['chairman_name'] = $this->request->getVar('chairman_name') ?? $club['chairman_name'];
+        $club['vice_chairman_name'] = $this->request->getVar('vice_chairman_name') ?? $club['vice_chairman_name'];
+        $club['timetable'] = $this->request->getVar('timetable') ?? $club['timetable'];
+        $club['vision'] = $this->request->getVar('vision') ?? $club['vision'];
+        $club['mission'] = $this->request->getVar('mission') ?? $club['mission'];
+        $club['work_program'] = $this->request->getVar('work_program') ?? $club['work_program'];
+        $club['instagram'] = $this->request->getVar('instagram') ?? $club['instagram'];
+        //instagram contain space ?
+        if (strpos($club['instagram'], ' ') !== false) {
+            return redirect()->with('error', 'Instagram account contains space')->back();//TODO translate
+        }
+        $icon_file = $this->request->getFile('icon');
+        if ($icon_file->isValid()) {
+            if ($icon_file->getError() == 0) {
+                $dir = ROOTPATH . '/public/images/icon/';
+                $file_name = $club['name'] . '.' . $icon_file->getExtension();
+                if (!$icon_file->hasMoved()) {
+                    $icon_file->move($dir, $file_name, true);
+                }
+                $club['icon'] = '/images/icon/' . $file_name;
+            } else {
+                return redirect()->with('error', 'Icon is invalid: ' . $icon_file->getErrorString())->back();
+            }
+        }
+        try {
+            if ($name == null) {
+                $clubModel->insert($club);
+            } else {
+                $clubModel->update($name, $club);
+            }
+            return redirect()->to(route_to('editor'));
+        } catch (Exception $e) {
+            return redirect()->with('error', 'Error: ' . $e->getMessage())->back();
+        }
     }
 }
