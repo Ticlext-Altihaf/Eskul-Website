@@ -1,4 +1,19 @@
-# Title
+# Requirement
+- PHP 7.4
+- SQL server
+- Composer
+- Enable php_intl and php_mbstring
+```ini
+extension=php_intl.dll
+extension=php_mbstring.dll
+```
+or
+```sh
+sudo apt-get install php-mbstring php-intl
+```
+
+# Running
+
 1. Setup SQL Server
 ```sql
 CREATE USER 'itclub'@'127.0.0.1' IDENTIFIED BY 'itclub';
